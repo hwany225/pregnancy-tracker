@@ -24,10 +24,11 @@
     --warn-soft: #FAE9E7;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: "Apple SD Gothic Neo", "Pretendard", -apple-system, sans-serif;
     background: var(--bg); color: var(--text); line-height: 1.65;
-    padding-bottom: 80px;
+    padding-bottom: 84px; font-size: 16px;
   }
   .container { max-width: 720px; margin: 0 auto; padding: 20px 16px; }
 
@@ -37,8 +38,8 @@
     color: #fff; padding: 28px 20px 24px; border-radius: 0 0 24px 24px;
   }
   header .inner { max-width: 720px; margin: 0 auto; }
-  header h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  header .sub { font-size: 13px; opacity: .9; }
+  header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  header .sub { font-size: 14.5px; opacity: .9; }
   .hero {
     display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;
   }
@@ -46,15 +47,15 @@
     flex: 1; min-width: 130px; background: rgba(255,255,255,.22);
     border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(4px);
   }
-  .stat .label { font-size: 12px; opacity: .9; }
-  .stat .value { font-size: 22px; font-weight: 800; margin-top: 2px; }
-  .stat .extra { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .stat .label { font-size: 13.5px; opacity: .9; }
+  .stat .value { font-size: 24px; font-weight: 800; margin-top: 2px; }
+  .stat .extra { font-size: 13.5px; opacity: .85; margin-top: 2px; }
   .progress-wrap { margin-top: 16px; }
   .progress-bar {
     height: 10px; background: rgba(255,255,255,.3); border-radius: 999px; overflow: hidden;
   }
   .progress-fill { height: 100%; background: #fff; border-radius: 999px; transition: width .6s ease; }
-  .progress-text { font-size: 12px; margin-top: 6px; opacity: .95; display: flex; justify-content: space-between; }
+  .progress-text { font-size: 13.5px; margin-top: 6px; opacity: .95; display: flex; justify-content: space-between; }
 
   /* Tabs */
   nav {
@@ -64,9 +65,9 @@
   }
   nav button {
     flex: 1; padding: 10px 4px 12px; border: none; background: none; cursor: pointer;
-    font-size: 11px; color: var(--text-sub); font-family: inherit;
+    font-size: 12.5px; color: var(--text-sub); font-family: inherit;
   }
-  nav button .icon { display: block; font-size: 20px; margin-bottom: 2px; }
+  nav button .icon { display: block; font-size: 22px; margin-bottom: 2px; }
   nav button.active { color: var(--primary); font-weight: 700; }
 
   /* Cards */
@@ -75,24 +76,24 @@
     margin-bottom: 14px; border: 1px solid var(--border);
     box-shadow: 0 2px 8px rgba(120, 80, 60, .04);
   }
-  .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .card h3 { font-size: 14px; font-weight: 700; margin: 14px 0 6px; color: var(--primary); }
-  .card p, .card li { font-size: 14px; color: var(--text); }
+  .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .card h3 { font-size: 16px; font-weight: 700; margin: 14px 0 6px; color: var(--primary); }
+  .card p, .card li { font-size: 16px; color: var(--text); }
   .card ul { padding-left: 18px; }
   .card li { margin-bottom: 5px; }
   .badge {
-    display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px;
+    display: inline-block; font-size: 12.5px; font-weight: 700; padding: 3px 10px;
     border-radius: 999px; background: var(--primary-soft); color: var(--primary);
   }
   .badge.green { background: var(--accent-soft); color: var(--accent); }
   .badge.red { background: var(--warn-soft); color: var(--warn); }
   .notice {
     background: var(--warn-soft); border-radius: 12px; padding: 12px 14px;
-    font-size: 13px; color: var(--warn); margin-top: 12px;
+    font-size: 15px; color: var(--warn); margin-top: 12px;
   }
   .tip {
     background: var(--accent-soft); border-radius: 12px; padding: 12px 14px;
-    font-size: 13px; color: #4A6B58; margin-top: 12px;
+    font-size: 15px; color: #4A6B58; margin-top: 12px;
   }
 
   /* Week navigator */
@@ -102,12 +103,12 @@
     background: var(--card); font-size: 18px; cursor: pointer; color: var(--text);
   }
   .week-nav button:disabled { opacity: .3; cursor: default; }
-  .week-nav .title { font-size: 18px; font-weight: 800; }
-  .week-nav .title small { display: block; font-size: 12px; font-weight: 400; color: var(--text-sub); text-align: center; }
+  .week-nav .title { font-size: 20px; font-weight: 800; }
+  .week-nav .title small { display: block; font-size: 13.5px; font-weight: 400; color: var(--text-sub); text-align: center; }
   .current-week-btn {
-    display: block; margin: 0 auto 14px; padding: 6px 16px; border-radius: 999px;
+    display: block; margin: 0 auto 14px; padding: 8px 18px; border-radius: 999px;
     border: 1px solid var(--primary); background: var(--primary-soft); color: var(--primary);
-    font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
   }
 
   /* Schedule table */
@@ -115,11 +116,11 @@
     display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border);
   }
   .schedule-item:last-child { border-bottom: none; }
-  .schedule-item .when { min-width: 92px; }
-  .schedule-item .when .weeks { font-size: 13px; font-weight: 700; color: var(--primary); }
-  .schedule-item .when .dates { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-  .schedule-item .what .name { font-size: 14px; font-weight: 700; }
-  .schedule-item .what .desc { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; }
+  .schedule-item .when { min-width: 96px; }
+  .schedule-item .when .weeks { font-size: 15px; font-weight: 700; color: var(--primary); }
+  .schedule-item .when .dates { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; }
+  .schedule-item .what .name { font-size: 16px; font-weight: 700; }
+  .schedule-item .what .desc { font-size: 14px; color: var(--text-sub); margin-top: 2px; }
   .schedule-item.done { opacity: .45; }
   .schedule-item.now { background: var(--primary-soft); border-radius: 12px; padding: 14px 12px; margin: 0 -12px; }
 
@@ -129,9 +130,9 @@
     border-bottom: 1px solid var(--border); cursor: pointer;
   }
   .check-item:last-child { border-bottom: none; }
-  .check-item input { margin-top: 4px; width: 17px; height: 17px; accent-color: var(--primary); flex-shrink: 0; }
-  .check-item .txt { font-size: 14px; }
-  .check-item .txt small { display: block; font-size: 12px; color: var(--text-sub); }
+  .check-item input { margin-top: 4px; width: 20px; height: 20px; accent-color: var(--primary); flex-shrink: 0; }
+  .check-item .txt { font-size: 16px; }
+  .check-item .txt small { display: block; font-size: 13.5px; color: var(--text-sub); }
   .check-item.checked .txt { text-decoration: line-through; color: var(--text-sub); }
 
   /* Food grid */
@@ -140,24 +141,24 @@
 
   /* Settings */
   .settings-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-  .settings-row label { font-size: 13px; font-weight: 700; }
+  .settings-row label { font-size: 15px; font-weight: 700; }
   .settings-row input, .settings-row select {
-    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
-    font-size: 14px; font-family: inherit; background: #fff; color: var(--text);
+    padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 16px; font-family: inherit; background: #fff; color: var(--text);
   }
   .btn-primary {
-    width: 100%; padding: 13px; border-radius: 12px; border: none;
-    background: var(--primary); color: #fff; font-size: 15px; font-weight: 700;
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: var(--primary); color: #fff; font-size: 17px; font-weight: 700;
     cursor: pointer; font-family: inherit;
   }
-  .disclaimer { font-size: 11.5px; color: var(--text-sub); text-align: center; margin-top: 20px; padding: 0 10px; }
+  .disclaimer { font-size: 13px; color: var(--text-sub); text-align: center; margin-top: 20px; padding: 0 10px; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
   .supp-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
   .supp-item:last-child { border-bottom: none; }
-  .supp-item .name { font-weight: 700; font-size: 14px; }
-  .supp-item .period { font-size: 12px; color: var(--primary); font-weight: 700; }
-  .supp-item .desc { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+  .supp-item .name { font-weight: 700; font-size: 16px; }
+  .supp-item .period { font-size: 13.5px; color: var(--primary); font-weight: 700; }
+  .supp-item .desc { font-size: 14.5px; color: var(--text-sub); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -229,7 +230,7 @@
 
 <script>
 /* ================= 설정 & 주차 계산 ================= */
-const DEFAULTS = { transferDate: '', embryoDay: 5 };
+const DEFAULTS = { transferDate: '2026-06-26', embryoDay: 5 };
 function loadSettings() {
   try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('pt-settings') || '{}') }; }
   catch { return { ...DEFAULTS }; }
@@ -702,7 +703,7 @@ function renderSchedule() {
   $('tab-schedule').innerHTML = `
   <div class="card">
     <h2>📲 아이폰/구글 캘린더로 알림 받기</h2>
-    <p style="font-size:13px;color:var(--text-sub);margin-bottom:12px">아래 버튼으로 캘린더 파일을 받아 열면, 남은 검사 일정(하루 전 알림 포함) + 매일 프로게스테론 알림(12주까지) + 매주 주차 알림이 폰 캘린더에 등록돼요. 부부 공유 캘린더에 넣으면 둘 다 알림을 받습니다.</p>
+    <p style="font-size:15px;color:var(--text-sub);margin-bottom:12px">아래 버튼으로 캘린더 파일을 받아 열면, 남은 검사 일정(하루 전 알림 포함) + 매일 프로게스테론 알림(12주까지) + 매주 주차 알림이 폰 캘린더에 등록돼요. 부부 공유 캘린더에 넣으면 둘 다 알림을 받습니다.</p>
     <button class="btn-primary" onclick="downloadICS()">🗓️ 캘린더 파일(.ics) 내려받기</button>
     <div class="tip">💡 아이폰: 파일을 받은 뒤 열기 → "모두 추가". 구글 캘린더: 설정 → 가져오기에서 파일 선택.</div>
   </div>
@@ -725,10 +726,10 @@ function renderNutrition() {
     `<div class="tip">💡 종합 임산부 비타민 하나로 대체해도 좋아요. 다만 <b>엽산 함량</b>과 <b>비타민A 과다(레티놀 형태 주의)</b> 여부를 확인하세요.</div></div>
     <div class="food-cols">
       <div class="card"><h2>🥗 챙겨 먹으면 좋아요</h2><ul>` +
-      FOODS_GOOD.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:12.5px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
+      FOODS_GOOD.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:14px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
       `</ul></div>
       <div class="card"><h2>🚫 피해야 해요</h2><ul>` +
-      FOODS_AVOID.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:12.5px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
+      FOODS_AVOID.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:14px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
       `</ul></div>
     </div>
     <div class="card"><h2>🏃 운동 & 생활</h2><ul>
