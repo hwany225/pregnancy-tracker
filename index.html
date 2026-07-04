@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="아기 여정">
+<meta name="theme-color" content="#E8927C">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👶</text></svg>">
+<title>우리 아기 임신 여정 🤍</title>
+<style>
+  :root {
+    --bg: #FDF8F5;
+    --card: #FFFFFF;
+    --primary: #E8927C;
+    --primary-soft: #FBEAE4;
+    --accent: #7CA98E;
+    --accent-soft: #E9F2EC;
+    --text: #3D3733;
+    --text-sub: #8A817B;
+    --border: #F0E6E0;
+    --warn: #C0564A;
+    --warn-soft: #FAE9E7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Apple SD Gothic Neo", "Pretendard", -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #F5C4B4 0%, #E8927C 100%);
+    color: #fff; padding: 28px 20px 24px; border-radius: 0 0 24px 24px;
+  }
+  header .inner { max-width: 720px; margin: 0 auto; }
+  header h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  header .sub { font-size: 13px; opacity: .9; }
+  .hero {
+    display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1; min-width: 130px; background: rgba(255,255,255,.22);
+    border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(4px);
+  }
+  .stat .label { font-size: 12px; opacity: .9; }
+  .stat .value { font-size: 22px; font-weight: 800; margin-top: 2px; }
+  .stat .extra { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .progress-wrap { margin-top: 16px; }
+  .progress-bar {
+    height: 10px; background: rgba(255,255,255,.3); border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: #fff; border-radius: 999px; transition: width .6s ease; }
+  .progress-text { font-size: 12px; margin-top: 6px; opacity: .95; display: flex; justify-content: space-between; }
+
+  /* Tabs */
+  nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: var(--card);
+    border-top: 1px solid var(--border); display: flex; z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav button {
+    flex: 1; padding: 10px 4px 12px; border: none; background: none; cursor: pointer;
+    font-size: 11px; color: var(--text-sub); font-family: inherit;
+  }
+  nav button .icon { display: block; font-size: 20px; margin-bottom: 2px; }
+  nav button.active { color: var(--primary); font-weight: 700; }
+
+  /* Cards */
+  .card {
+    background: var(--card); border-radius: 18px; padding: 20px;
+    margin-bottom: 14px; border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(120, 80, 60, .04);
+  }
+  .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card h3 { font-size: 14px; font-weight: 700; margin: 14px 0 6px; color: var(--primary); }
+  .card p, .card li { font-size: 14px; color: var(--text); }
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 5px; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 999px; background: var(--primary-soft); color: var(--primary);
+  }
+  .badge.green { background: var(--accent-soft); color: var(--accent); }
+  .badge.red { background: var(--warn-soft); color: var(--warn); }
+  .notice {
+    background: var(--warn-soft); border-radius: 12px; padding: 12px 14px;
+    font-size: 13px; color: var(--warn); margin-top: 12px;
+  }
+  .tip {
+    background: var(--accent-soft); border-radius: 12px; padding: 12px 14px;
+    font-size: 13px; color: #4A6B58; margin-top: 12px;
+  }
+
+  /* Week navigator */
+  .week-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .week-nav button {
+    width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--card); font-size: 18px; cursor: pointer; color: var(--text);
+  }
+  .week-nav button:disabled { opacity: .3; cursor: default; }
+  .week-nav .title { font-size: 18px; font-weight: 800; }
+  .week-nav .title small { display: block; font-size: 12px; font-weight: 400; color: var(--text-sub); text-align: center; }
+  .current-week-btn {
+    display: block; margin: 0 auto 14px; padding: 6px 16px; border-radius: 999px;
+    border: 1px solid var(--primary); background: var(--primary-soft); color: var(--primary);
+    font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+
+  /* Schedule table */
+  .schedule-item {
+    display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .schedule-item:last-child { border-bottom: none; }
+  .schedule-item .when { min-width: 92px; }
+  .schedule-item .when .weeks { font-size: 13px; font-weight: 700; color: var(--primary); }
+  .schedule-item .when .dates { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .schedule-item .what .name { font-size: 14px; font-weight: 700; }
+  .schedule-item .what .desc { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; }
+  .schedule-item.done { opacity: .45; }
+  .schedule-item.now { background: var(--primary-soft); border-radius: 12px; padding: 14px 12px; margin: 0 -12px; }
+
+  /* Checklist */
+  .check-item {
+    display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input { margin-top: 4px; width: 17px; height: 17px; accent-color: var(--primary); flex-shrink: 0; }
+  .check-item .txt { font-size: 14px; }
+  .check-item .txt small { display: block; font-size: 12px; color: var(--text-sub); }
+  .check-item.checked .txt { text-decoration: line-through; color: var(--text-sub); }
+
+  /* Food grid */
+  .food-cols { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 560px) { .food-cols { grid-template-columns: 1fr 1fr; } }
+
+  /* Settings */
+  .settings-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .settings-row label { font-size: 13px; font-weight: 700; }
+  .settings-row input, .settings-row select {
+    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 14px; font-family: inherit; background: #fff; color: var(--text);
+  }
+  .btn-primary {
+    width: 100%; padding: 13px; border-radius: 12px; border: none;
+    background: var(--primary); color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .disclaimer { font-size: 11.5px; color: var(--text-sub); text-align: center; margin-top: 20px; padding: 0 10px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .supp-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .supp-item:last-child { border-bottom: none; }
+  .supp-item .name { font-weight: 700; font-size: 14px; }
+  .supp-item .period { font-size: 12px; color: var(--primary); font-weight: 700; }
+  .supp-item .desc { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1 id="header-title">우리 아기 임신 여정 🤍</h1>
+    <div class="sub" id="header-sub"></div>
+    <div class="hero">
+      <div class="stat">
+        <div class="label">현재 임신 주차</div>
+        <div class="value" id="stat-week">-</div>
+        <div class="extra" id="stat-week-extra"></div>
+      </div>
+      <div class="stat">
+        <div class="label">출산예정일</div>
+        <div class="value" id="stat-dday">-</div>
+        <div class="extra" id="stat-due"></div>
+      </div>
+      <div class="stat">
+        <div class="label">아기 크기</div>
+        <div class="value" id="stat-size">-</div>
+        <div class="extra" id="stat-size-extra"></div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-text">
+        <span id="progress-pct"></span>
+        <span id="progress-tri"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- 홈 -->
+  <div class="tab-content active" id="tab-home"></div>
+  <!-- 주차별 가이드 -->
+  <div class="tab-content" id="tab-weeks">
+    <button class="current-week-btn" onclick="goCurrentWeek()">📍 현재 주차로 이동</button>
+    <div class="week-nav">
+      <button id="week-prev" onclick="navWeek(-1)">‹</button>
+      <div class="title" id="week-title"></div>
+      <button id="week-next" onclick="navWeek(1)">›</button>
+    </div>
+    <div id="week-detail"></div>
+  </div>
+  <!-- 검사 일정 -->
+  <div class="tab-content" id="tab-schedule"></div>
+  <!-- 영양 -->
+  <div class="tab-content" id="tab-nutrition"></div>
+  <!-- 체크리스트 -->
+  <div class="tab-content" id="tab-checklist"></div>
+  <!-- 설정 -->
+  <div class="tab-content" id="tab-settings"></div>
+
+  <p class="disclaimer">⚕️ 이 앱의 정보는 일반적인 참고용입니다. 검사·약물·증상에 대한 모든 판단은 반드시 담당 의사와 상의하세요. 특히 시험관 임신은 초기 관리(프로게스테론 등)를 병원 지시대로 따르는 것이 중요합니다.</p>
+</div>
+
+<nav>
+  <button class="active" data-tab="home"><span class="icon">🏠</span>오늘</button>
+  <button data-tab="weeks"><span class="icon">📖</span>주차별</button>
+  <button data-tab="schedule"><span class="icon">🗓️</span>검사일정</button>
+  <button data-tab="nutrition"><span class="icon">🥗</span>영양</button>
+  <button data-tab="checklist"><span class="icon">✅</span>체크리스트</button>
+  <button data-tab="settings"><span class="icon">⚙️</span>설정</button>
+</nav>
+
+<script>
+/* ================= 설정 & 주차 계산 ================= */
+const DEFAULTS = { transferDate: '', embryoDay: 5 };
+function loadSettings() {
+  try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('pt-settings') || '{}') }; }
+  catch { return { ...DEFAULTS }; }
+}
+let settings = loadSettings();
+
+function parseDate(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function fmtDate(d) { return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+function fmtShort(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+
+function calc() {
+  const transfer = parseDate(settings.transferDate);
+  const today = new Date(); today.setHours(0,0,0,0);
+  // 시험관: 배아 이식일의 임신 나이 = 14일 + 배양일수
+  const gaDays = Math.floor((today - transfer) / 86400000) + 14 + Number(settings.embryoDay);
+  const dueDate = addDays(transfer, 266 - Number(settings.embryoDay)); // GA 280일 시점
+  const week = Math.floor(gaDays / 7);
+  const day = gaDays % 7;
+  const ddayNum = Math.ceil((dueDate - today) / 86400000);
+  return { gaDays, week, day, dueDate, ddayNum, today, transfer };
+}
+// 특정 주차의 시작 날짜 (GA week*7일 시점)
+function weekStartDate(w) {
+  const transfer = parseDate(settings.transferDate);
+  return addDays(transfer, w*7 - (14 + Number(settings.embryoDay)));
+}
+
+/* ================= 주차별 데이터 (4~42주) ================= */
+const SIZES = {
+  4:['양귀비씨','~1mm'],5:['참깨','~2mm'],6:['팥알','4~6mm'],7:['블루베리','~1cm'],
+  8:['라즈베리','~1.6cm'],9:['체리','~2.3cm'],10:['금귤','~3.1cm'],11:['무화과','~4cm'],
+  12:['라임','~5.4cm'],13:['레몬','~7.4cm'],14:['복숭아','~8.7cm'],15:['사과','~10cm'],
+  16:['아보카도','~11.6cm'],17:['배','~13cm'],18:['고구마','~14.2cm'],19:['망고','~15.3cm'],
+  20:['바나나','~16.4cm'],21:['당근','~26.7cm'],22:['파파야','~27.8cm'],23:['자몽','~28.9cm'],
+  24:['옥수수','~30cm'],25:['콜리플라워','~34.6cm'],26:['상추 한 포기','~35.6cm'],27:['배추','~36.6cm'],
+  28:['가지','~37.6cm'],29:['호박','~38.6cm'],30:['양배추','~39.9cm'],31:['코코넛','~41.1cm'],
+  32:['파인애플','~42.4cm'],33:['멜론','~43.7cm'],34:['버터넛 스쿼시','~45cm'],35:['허니듀 멜론','~46.2cm'],
+  36:['로메인 한 다발','~47.4cm'],37:['근대 한 단','~48.6cm'],38:['수박(소)','~49.8cm'],
+  39:['호박(대)','~50.7cm'],40:['수박','~51.2cm'],41:['수박','~51.5cm'],42:['수박','~51.7cm']
+};
+
+const WEEKS = {
+4:{baby:'배아가 자궁내막에 완전히 착상하고, hCG 호르몬이 빠르게 상승합니다. 태반과 양수주머니의 기초가 만들어지기 시작해요.',
+mom:'생리 예정일 무렵이라 아직 큰 변화는 없지만, 약간의 착상혈이나 미열, 피로감이 있을 수 있어요.',
+todo:['병원에서 hCG 피검사로 임신 확인 (1차·2차 수치 상승 확인)','프로게스테론(질정/주사) 병원 지시대로 절대 빠뜨리지 않기','엽산 매일 복용 유지'],
+caution:'시험관 임신 초기의 프로게스테론은 유산 방지에 매우 중요합니다. 임의로 중단하거나 용량을 바꾸지 마세요. 배가 심하게 아프거나 출혈이 많으면 즉시 병원 연락.'},
+5:{baby:'아기집(태낭)이 초음파로 보이기 시작하는 시기예요. 신경관(뇌·척수의 기초)이 형성되기 시작합니다.',
+mom:'피로감, 가슴 뭉침, 잦은 소변 등 초기 증상이 시작될 수 있어요. 사람마다 달라서 증상이 없어도 괜찮습니다.',
+todo:['1차 초음파 — 아기집 위치·개수 확인 (자궁외임신 배제)','엽산 + 프로게스테론 유지','카페인 하루 200mg 이하로 줄이기 (커피 1잔 정도)'],
+caution:'신경관 형성 시기라 엽산이 가장 중요한 때입니다. 음주는 완전히 중단하세요.'},
+6:{baby:'심장이 뛰기 시작합니다! 분당 100~160회로 빠르게 뜁니다. 팔다리 싹이 나오기 시작해요.',
+mom:'입덧이 시작될 수 있는 시기. 후각이 예민해지고 특정 냄새가 힘들 수 있어요.',
+todo:['초음파로 심장박동 확인 💓 (시험관 임신의 큰 고비 하나 통과!)','입덧 시 조금씩 자주 먹기, 수분 충분히','무리한 운동·장거리 이동 피하기'],
+caution:'입덧으로 아무것도 못 먹어도 아기는 괜찮습니다. 다만 물도 못 마실 정도면(임신오조) 병원 진료 필요.'},
+7:{baby:'뇌가 빠르게 발달하고 얼굴 윤곽(눈, 콧구멍, 입)이 잡히기 시작해요. 심박동이 더 강해집니다.',
+mom:'입덧이 본격화될 수 있어요. 호르몬 변화로 감정 기복, 변비가 생길 수 있습니다.',
+todo:['정기 초음파 — 태아 성장·심박 확인','철분이 아닌 엽산 위주 유지 (철분은 입덧 악화 가능, 아직 이름)','비타민B6는 입덧 완화에 도움 (의사 상의)'],
+caution:'약(감기약 포함) 복용 전 반드시 산부인과에 확인하세요.'},
+8:{baby:'손가락·발가락이 나뉘기 시작하고, 모든 주요 장기의 기초가 만들어지고 있어요. 이제 "배아"에서 "태아"로 넘어가는 시기.',
+mom:'자궁이 커지며 아랫배가 살짝 당길 수 있어요. 가슴이 커지고 예민해집니다.',
+todo:['산모수첩 발급 (병원에서)','기본 산전 혈액검사 (혈액형, 빈혈, 풍진항체, 간염, 갑상선 등)','국민행복카드 신청 준비 (임신확인서 받기)'],
+caution:'뜨거운 사우나·찜질방·장시간 반신욕은 피하세요 (체온 상승은 초기 태아에 좋지 않음).'},
+9:{baby:'꼬리가 사라지고 완전한 사람 형태가 됩니다. 팔꿈치가 구부러지고 손가락이 또렷해져요.',
+mom:'입덧 절정기일 수 있어요. 허리가 살짝 굵어지기 시작합니다.',
+todo:['입덧이 심하면 참지 말고 병원에서 입덧약 처방받기 (안전한 약 있음)','수분 보충 — 생강차, 이온음료 활용','짧은 산책으로 컨디션 관리'],
+caution:'체중이 좀 빠져도 초기에는 괜찮습니다. 탈수만 조심하세요.'},
+10:{baby:'주요 장기가 모두 형성 완료! 이제부터는 성장과 성숙의 시간입니다. 손톱과 머리카락이 자라기 시작해요.',
+mom:'기형 유발 물질에 가장 민감한 시기가 지나가면서 조금 안심할 수 있는 구간에 들어섭니다.',
+todo:['NIPT(니프티) 검사 고려 — 10주부터 가능, 담당의와 상의','프로게스테론 중단 시점 의사와 상의 (보통 8~12주)','치과 검진 (임신 중기 치료 대비 미리 체크)'],
+caution:'시험관 임신은 보통 10~12주쯤 난임병원을 "졸업"하고 일반 산부인과로 옮깁니다. 분만 병원을 슬슬 알아보세요.'},
+11:{baby:'태아가 딸꾹질을 하고 몸을 움직이기 시작해요 (아직 느껴지진 않아요). 피부는 투명하지만 뼈가 단단해지고 있어요.',
+mom:'입덧이 서서히 줄기 시작하는 분들이 많아요. 에너지가 조금씩 돌아옵니다.',
+todo:['1차 기형아 검사 예약 — NT 초음파 + 더블마커 (11~13주 사이 필수!)','분만 병원 결정하기','임산부 등록 (보건소) — 엽산·철분제 무료 지원'],
+caution:'NT(목덜미 투명대) 초음파는 11주 0일~13주 6일 사이에만 가능하니 시기를 놓치지 마세요.'},
+12:{baby:'반사 신경이 발달해 손을 쥐었다 폈다 해요. 신장이 소변을 만들기 시작합니다.',
+mom:'유산 위험이 크게 낮아지는 시기 — 1분기 끝! 주변에 임신 소식을 알리는 분들이 많아요.',
+todo:['1차 기형아 검사 (아직 안 했다면 이번 주까지)','회사에 임신 사실 알리기 (근로시간 단축 등 제도 활용)','임신 초기 근로시간 단축 신청 가능 (12주 이내, 하루 2시간)'],
+caution:'프로게스테론 졸업 여부를 담당의와 확실히 확인하세요.'},
+13:{baby:'지문이 생기고, 성대가 발달해요. 몸이 머리에 비해 빠르게 자라며 비율이 잡혀갑니다.',
+mom:'2분기 시작! 입덧이 줄고 식욕이 돌아오는 "허니문 시기"에 들어섭니다.',
+todo:['식단 재정비 — 단백질·칼슘 충분히','가벼운 운동 시작 (걷기, 임산부 요가)','부부가 함께 태명 짓기 🙂'],
+caution:'식욕이 돌아와도 "둘이 먹는다"고 두 배로 먹을 필요는 없어요. 2분기 권장 추가 열량은 하루 +340kcal 정도입니다.'},
+14:{baby:'표정을 짓기 시작하고 (찡그리기, 눈 가늘게 뜨기), 몸에 솜털(배냇솜털)이 자라요.',
+mom:'배가 살짝 나오기 시작할 수 있어요. 피부와 머릿결이 좋아지는 분들도 많습니다.',
+todo:['임산부 자세 교정 — 허리 받침 쿠션 활용','편한 임부복·속옷 준비 시작','수면 자세 연습: 왼쪽으로 눕는 습관 들이기'],
+caution:'2분기부터는 배를 완전히 바닥에 대고 엎드리는 자세는 피하세요.'},
+15:{baby:'빛을 감지할 수 있게 됩니다. 뼈가 계속 단단해지고 두피 머리카락 패턴이 형성돼요.',
+mom:'코막힘·잇몸 출혈이 생길 수 있어요 (혈류량 증가 때문, 정상입니다).',
+todo:['2차 기형아 검사(쿼드 검사) 예약 — 15~20주','치과 검진·스케일링 (2분기가 가장 안전한 시기)','임산부 치과 진료는 건강보험 적용 확인'],
+caution:'잇몸 관리 소홀 시 임신성 치은염이 흔합니다. 부드러운 칫솔로 꼼꼼히.'},
+16:{baby:'귀 뼈가 발달해 소리를 듣기 시작해요! 엄마 목소리, 심장 소리를 듣습니다.',
+mom:'첫 태동을 느끼는 분들이 나오기 시작해요 (초산은 18~20주가 흔해요). 이제 철분이 필요한 시기.',
+todo:['철분제 복용 시작 (16주~, 보건소 무료 지원)','태담 시작 — 아기에게 말 걸기, 음악 들려주기','2차 기형아 검사 받기'],
+caution:'철분제는 변비를 유발할 수 있어요. 물·식이섬유 충분히, 비타민C와 함께 먹으면 흡수율 상승. 칼슘·커피와는 시간 간격 두기.'},
+17:{baby:'지방이 붙기 시작해 몸이 통통해져요. 탯줄이 더 굵고 튼튼해집니다.',
+mom:'배가 눈에 띄게 나오기 시작. 무게중심이 바뀌며 허리 통증이 시작될 수 있어요.',
+todo:['임산부 요가·수영 등 규칙적 운동','굽 낮은 편한 신발로 교체','튼살 크림 미리 바르기 시작'],
+caution:'갑자기 일어날 때 어지러울 수 있어요 (저혈압). 천천히 움직이세요.'},
+18:{baby:'귀가 제자리를 잡고, 신경이 수초로 덮이며 신경 발달이 가속됩니다. 딸/아들 구분이 초음파로 가능해져요.',
+mom:'태동을 "뽀글뽀글" 느끼기 시작할 수 있어요.',
+todo:['정밀 초음파 예약 (20~24주)','아기 성별 확인 가능 시기 🙂','출산·육아 용품 리스트 만들기 시작'],
+caution:'허리 통증엔 임산부 복대가 도움될 수 있어요.'},
+19:{baby:'태지(피부를 보호하는 크림 같은 막)가 몸을 덮기 시작해요. 감각 뇌 영역이 빠르게 발달합니다.',
+mom:'다리에 쥐가 나기 시작할 수 있어요. 마그네슘·수분 보충이 도움됩니다.',
+todo:['자기 전 종아리 스트레칭 습관','칼슘·마그네슘 섭취 신경 쓰기','출산휴가·육아휴직 계획 회사와 논의 시작'],
+caution:'다리 쥐가 잦고 붓기가 심하면 진료 시 말씀하세요.'},
+20:{baby:'임신 반환점! 삼키는 연습을 하고 태변이 만들어지기 시작해요. 규칙적으로 자고 깹니다.',
+mom:'태동이 뚜렷해집니다. 배꼽 주변이 당기는 느낌(원인대 통증)이 있을 수 있어요.',
+todo:['정밀 초음파 (20~24주) — 장기·구조 정밀 확인','임신 반환점 기념 사진 📸','유아차·카시트 등 큰 용품 알아보기 시작'],
+caution:'정밀 초음파는 태아 구조 이상을 확인하는 중요한 검사입니다. 꼭 시기 내에 받으세요.'},
+21:{baby:'눈썹과 눈꺼풀이 완성돼요. 태동이 점점 힘차집니다.',
+mom:'배가 커지며 피부가 가려울 수 있어요. 보습을 충분히.',
+todo:['임산부 교실·출산 교실 알아보기','태동 느끼면 아빠도 배에 손 올려 함께 교감하기','철분제 꾸준히'],
+caution:'심한 가려움(특히 손바닥·발바닥)은 담즙정체일 수 있으니 진료 시 상담.'},
+22:{baby:'입술과 눈이 또렷해지고, 아빠 목소리 같은 낮은 소리에 더 잘 반응해요.',
+mom:'배꼽이 튀어나올 수 있고, 가진통(배 뭉침)을 가끔 느낄 수 있어요.',
+todo:['아빠 목소리로 태담·책 읽어주기','임신성 당뇨 검사 예약 (24~28주)','발 붓기 시작하면 편한 신발·압박양말 고려'],
+caution:'배 뭉침이 규칙적이거나 통증·출혈 동반 시 즉시 병원.'},
+23:{baby:'청력이 완성 단계. 폐에서 계면활성제 생산이 시작돼 호흡 준비를 해요.',
+mom:'체중이 본격적으로 늘어나는 시기입니다.',
+todo:['체중 증가 추이 확인 (전체 임신 기간 권장 10~16kg 안팎, 개인차)','단백질 섭취 늘리기','산책 등 유산소 운동 유지'],
+caution:'급격한 체중 증가 + 붓기 + 두통은 임신중독증 신호일 수 있어요.'},
+24:{baby:'생존 가능 주수에 진입하는 중요한 시기. 얼굴이 완성형에 가까워지고 청각이 예민해져요.',
+mom:'허리·골반 통증, 속쓰림이 늘 수 있어요.',
+todo:['임신성 당뇨 검사 (24~28주 필수!)','빈혈 검사 (재검)','속쓰림엔 소량씩 자주 먹고 식후 바로 눕지 않기'],
+caution:'임당 검사 전 안내받은 금식 지침을 꼭 지키세요.'},
+25:{baby:'콧구멍이 열리고 호흡 연습을 시작해요. 손의 감각이 발달해 탯줄을 잡고 놀아요.',
+mom:'수면이 불편해지기 시작해요. 임산부 바디필로우가 큰 도움이 됩니다.',
+todo:['임산부 바디필로우 장만','출산 병원 분만 방식 상담 (자연분만/제왕절개)','아기 이름 후보 리스트 🙂'],
+caution:'왼쪽으로 누워 자는 것이 혈류에 가장 좋습니다.'},
+26:{baby:'눈을 뜨기 시작해요! 빛에 반응하고, 뇌파 활동이 활발해집니다.',
+mom:'배가 많이 나와 몸의 균형 잡기가 어려워져요.',
+todo:['낙상 주의 — 미끄러운 곳, 계단 조심','출산 가방 리스트 작성 시작','산후조리원 알아보기 (인기 조리원은 일찍 마감)'],
+caution:'산후조리원은 지역에 따라 임신 중기 전에 마감되기도 해요. 서두르세요.'},
+27:{baby:'2분기 마지막 주! 규칙적으로 딸꾹질하는 게 느껴질 수 있어요. 뇌가 빠르게 성장합니다.',
+mom:'3분기를 앞두고 몸이 무거워지기 시작해요.',
+todo:['백일해(Tdap) 백신 접종 시기 확인 (27~36주 권장)','아빠·가족도 백일해 접종 (아기 보호)','독감 시즌이면 독감 백신도 (임신 중 안전)'],
+caution:'백일해 백신은 신생아를 보호하는 중요한 접종입니다. 꼭 챙기세요.'},
+28:{baby:'3분기 시작! 눈을 뜨고 감고, 꿈꾸는 수면(렘수면)을 해요. 살이 통통하게 오릅니다.',
+mom:'검진이 2주 간격으로 잦아집니다. 숨이 차고 소화가 어려울 수 있어요.',
+todo:['이제 검진 주기 2주 1회로 (28~36주)','태동 횟수 세기 습관 (하루 10회 이상 확인)','Rh- 혈액형인 경우 면역글로불린 주사 (해당자)'],
+caution:'태동이 평소보다 눈에 띄게 줄면 바로 병원에 연락하세요.'},
+29:{baby:'뼈가 완전히 발달했지만 아직 말랑해요. 머리를 아래로 돌리기 시작하는 아기도 있어요.',
+mom:'갈비뼈 아래 발차기가 느껴질 수 있어요. 요통·부종이 심해질 수 있습니다.',
+todo:['출산휴가 서류 준비','수유용품·신생아 용품 본격 구매','손목 보호 (산후 손목터널증후군 예방 스트레칭)'],
+caution:'하루 중 다리를 올리고 쉬는 시간을 꼭 확보하세요.'},
+30:{baby:'뇌 주름이 늘고 골수가 적혈구를 만들기 시작해요. 눈으로 초점을 맞춥니다.',
+mom:'체중이 가장 빠르게 느는 시기 중 하나. 튼살·가려움 관리 계속.',
+todo:['출산 가방 싸기 시작 (34주 전 완성 목표)','신생아 카시트 설치 연습','모유수유 교육·영상 미리 보기'],
+caution:'출산 가방: 산모수첩, 신분증, 세면도구, 수유브라, 아기 배냇저고리·속싸개, 퇴원용 옷 등.'},
+31:{baby:'다섯 감각이 모두 작동해요. 몸을 웅크린 자세를 잡아갑니다.',
+mom:'가진통(브랙스톤 힉스)이 잦아질 수 있어요. 불규칙하고 쉬면 사라지면 정상.',
+todo:['진진통 vs 가진통 구분법 익히기','병원 가는 시나리오 남편과 리허설 (교통편, 소요시간)','산후조리 계획 확정'],
+caution:'진진통: 규칙적 간격 + 점점 짧아지고 강해짐 + 쉬어도 계속. 이슬·양수 터짐도 병원행 신호.'},
+32:{baby:'피부가 불투명해지고 손톱이 다 자랐어요. 대부분 머리를 아래로 향해요.',
+mom:'숨이 차고 화장실을 자주 가요. 자궁이 갈비뼈까지 올라왔어요.',
+todo:['태아 위치(두위/역아) 확인','아기 옷·용품 세탁 (유아 세제로)','아기 이름 최종 후보 좁히기'],
+caution:'역아여도 아직 돌 수 있는 시기이니 너무 걱정 마세요.'},
+33:{baby:'면역 시스템이 발달 중 — 엄마 항체를 받고 있어요. 뼈가 단단해집니다(머리뼈는 출산 위해 말랑).',
+mom:'손발 부종이 심해질 수 있어요. 반지는 미리 빼두세요.',
+todo:['막달 검사 일정 확인 (34~36주)','산후 도우미/정부 산모·신생아 건강관리 서비스 신청 알아보기','냉동식·반찬 미리 만들어 쟁여두기'],
+caution:'갑작스러운 심한 부종 + 두통 + 시야 흐림은 즉시 병원.'},
+34:{baby:'폐가 거의 성숙해요. 태지가 두꺼워지며 피부를 보호합니다.',
+mom:'골반 쪽 압박감이 느껴질 수 있어요 (아기가 내려오는 중).',
+todo:['막달 검사 (혈액, 소변, 초음파, 심전도 등)','출산 가방 완성 & 현관 근처에 두기','병원 등록 서류·비용 미리 확인'],
+caution:'이제부터는 장거리 여행은 피하는 게 좋아요.'},
+35:{baby:'신장·간이 완전 가동돼요. 살이 올라 팔다리가 통통해집니다.',
+mom:'검진에서 내진이 시작될 수 있어요.',
+todo:['GBS(B군 연쇄상구균) 검사 (35~37주)','제모·회음부 관리 등 분만 준비 안내 확인','산후조리원 입소 절차 재확인'],
+caution:'양수가 터지면(왈칵 또는 주르륵) 시간 기록 후 바로 병원으로.'},
+36:{baby:'막달 진입! 매주 약 30g씩 살이 붙어요. 머리가 골반으로 내려앉기 시작합니다.',
+mom:'이제 검진이 매주 1회. 아기가 내려오면 숨쉬기는 편해지고 화장실은 더 자주 가요.',
+todo:['이제부터 주 1회 검진','태동 검사(NST) 시작','입원 절차·분만실 위치 사전 답사'],
+caution:'37주 전 규칙적 진통은 조산 신호 — 즉시 병원.'},
+37:{baby:'이제 "조기 만삭"! 폐와 뇌가 마지막 성숙 중이에요. 언제 태어나도 괜찮은 준비를 하고 있어요.',
+mom:'이슬(피 섞인 점액)이 비칠 수 있어요 — 출산이 머지않았다는 신호.',
+todo:['매주 NST + 내진','회음부 마사지 (원하면)','마지막 데이트 즐기기 🙂 (한동안 둘만의 시간이 귀해져요)'],
+caution:'진통 간격이 초산 기준 5분 간격으로 1시간 지속되면 병원으로.'},
+38:{baby:'모든 장기 준비 완료. 태지·솜털이 벗겨지고 세상에 나올 준비를 마쳤어요.',
+mom:'골반 통증, 잦은 가진통. 둥지 본능(집 정리 욕구)이 생기기도 해요.',
+todo:['휴대폰 충전기·보조배터리 출산 가방에','아기 맞이 집 최종 점검','무리하지 않기 — 체력 아끼기'],
+caution:'태동 감소, 양수 파열, 규칙적 진통, 많은 출혈 → 즉시 병원.'},
+39:{baby:'완전한 만삭이에요. 뇌는 태어난 뒤에도 계속 폭풍 성장합니다.',
+mom:'언제든 출산할 수 있어요. 예정일은 "예정"일 뿐 — 조급해하지 마세요.',
+todo:['진통 오면 할 일 순서 최종 점검','가족 비상연락망 공유','잘 먹고 잘 자기'],
+caution:'초산은 예정일을 넘기는 경우도 흔합니다.'},
+40:{baby:'출산 예정 주! 평균 3.2~3.4kg, 50cm 안팎. 아기도 나올 준비가 됐어요.',
+mom:'예정일이 지나도 41주까지는 정상 범위입니다.',
+todo:['병원과 유도분만 여부·시기 상담','태동 계속 체크','마음 편히 — 곧 만나요 👶'],
+caution:'예정일 이후엔 태아 안녕 검사(NST 등)를 더 자주 합니다.'},
+41:{baby:'조금 늦잠 자는 아기예요. 병원에서 태아 상태를 자주 확인합니다.',
+mom:'유도분만을 계획하는 경우가 많아요.',
+todo:['병원 지시대로 태아 모니터링','유도분만 일정 확정','입원 준비 최종 확인'],
+caution:'42주를 넘기지 않도록 병원에서 관리합니다.'},
+42:{baby:'이제 정말 만날 시간! 병원에서 분만을 진행할 거예요.',
+mom:'곧 품에 안게 됩니다. 그동안 정말 수고 많으셨어요.',
+todo:['의료진 안내에 따라 분만 진행'],caution:''}
+};
+
+/* ================= 검사 일정 ================= */
+const CHECKUPS = [
+  {s:4,e:5,name:'hCG 피검사 (임신 확인)',desc:'이식 후 9~14일. 수치가 이틀마다 2배 가까이 오르는지 확인'},
+  {s:5,e:6,name:'1차 초음파 — 아기집 확인',desc:'태낭 위치·개수 확인, 자궁외임신 배제'},
+  {s:6,e:7,name:'심장박동 확인 💓',desc:'시험관 임신의 중요한 고비. 심박 확인 후 유산율 크게 감소'},
+  {s:8,e:10,name:'기본 산전검사 + 산모수첩',desc:'혈액형·빈혈·풍진·간염·갑상선·소변검사 등. 임신확인서로 국민행복카드 신청'},
+  {s:10,e:13,name:'NIPT (선택)',desc:'태아 DNA 선별검사. 10주부터 가능, 담당의와 상의'},
+  {s:10,e:12,name:'난임병원 졸업 → 분만병원 전원',desc:'프로게스테론 중단 시점 상의, 진료기록 지참'},
+  {s:11,e:13,name:'1차 기형아 검사 (NT + 더블마커)',desc:'목덜미투명대 초음파 — 11주 0일~13주 6일에만 가능!'},
+  {s:15,e:20,name:'2차 기형아 검사 (쿼드)',desc:'혈액검사로 신경관결손·염색체 이상 선별'},
+  {s:16,e:16,name:'철분제 복용 시작',desc:'보건소 무료 지원. 비타민C와 함께, 칼슘·커피와는 시간차'},
+  {s:20,e:24,name:'정밀 초음파',desc:'태아 장기·구조 정밀 확인. 성별도 확인 가능'},
+  {s:24,e:28,name:'임신성 당뇨 검사 + 빈혈 재검',desc:'50g 당부하 검사. 안내된 금식 지침 준수'},
+  {s:27,e:36,name:'백일해(Tdap) 백신',desc:'신생아 보호 목적. 아빠·동거 가족도 접종 권장'},
+  {s:28,e:36,name:'검진 주기: 2주 1회',desc:'태동 체크 습관화. Rh- 산모는 면역글로불린'},
+  {s:34,e:36,name:'막달 검사',desc:'혈액·소변·초음파·심전도 등 분만 전 종합 점검'},
+  {s:35,e:37,name:'GBS 검사',desc:'B군 연쇄상구균 검사 — 양성이면 분만 시 항생제'},
+  {s:36,e:40,name:'검진 주기: 매주 + 태동검사(NST)',desc:'내진으로 자궁경부 상태 확인'},
+  {s:40,e:42,name:'출산 예정 👶',desc:'예정일 지나면 태아 모니터링 강화, 유도분만 상담'}
+];
+
+/* ================= 영양제 ================= */
+const SUPPLEMENTS = [
+  {name:'엽산 (400~800㎍)',period:'임신 전 ~ 12주 (이후도 유지 무방)',desc:'신경관 결손 예방의 핵심. 초기 12주가 가장 중요. 보건소에서 무료 지원'},
+  {name:'프로게스테론 (질정/주사)',period:'이식 후 ~ 8~12주 (병원 지시)',desc:'시험관 임신 필수. 절대 임의로 중단·감량하지 말 것. 중단 시점은 담당의가 결정'},
+  {name:'비타민D (1000~2000IU)',period:'임신 전 기간',desc:'한국 산모 대부분 부족. 태아 뼈 발달·면역에 중요. 혈액검사로 수치 확인 가능'},
+  {name:'철분 (30~60mg)',period:'16주 ~ 출산 후 3개월',desc:'빈혈 예방. 보건소 무료 지원. 공복+비타민C와 함께 흡수 최적. 변비 시 물·식이섬유 늘리기'},
+  {name:'오메가3 (DHA 200~300mg)',period:'임신 중기 ~ 후기',desc:'태아 뇌·시각 발달. 임산부용(중금속 검사된) 제품으로. 출산 임박(37주~)엔 중단 여부 의사 상의'},
+  {name:'칼슘 (하루 총 1000mg)',period:'전 기간 (특히 중·후기)',desc:'음식으로 우선(우유·멸치·두부). 철분제와 2시간 이상 간격'},
+  {name:'유산균 (선택)',period:'전 기간',desc:'임신 중 변비·질염 예방에 도움. 임산부용 제품으로'},
+  {name:'비타민B6 (선택)',period:'입덧 시기',desc:'입덧 완화에 도움. 입덧약(디클렉틴 등) 성분이기도 함. 복용 전 의사 상의'}
+];
+
+const FOODS_GOOD = [
+  ['🥬 시금치·브로콜리','엽산·철분·식이섬유의 보고'],
+  ['🥚 달걀 (완숙)','단백질 + 콜린(태아 뇌 발달). 반드시 완전히 익혀서'],
+  ['🐟 연어·고등어 (익힌 것)','오메가3 풍부 + 수은 낮음. 주 2~3회'],
+  ['🥛 우유·요거트·치즈(살균)','칼슘·단백질. 하루 우유 2잔 정도'],
+  ['🫘 콩·두부·렌틸콩','식물성 단백질 + 엽산'],
+  ['🍠 고구마','베타카로틴·식이섬유 — 변비 예방'],
+  ['🥜 견과류 (하루 한 줌)','불포화지방·비타민E. 호두는 오메가3도'],
+  ['🍌 바나나·아보카도','칼륨 — 다리 쥐·부종 완화'],
+  ['🫐 블루베리·딸기 등 베리류','항산화 + 비타민C (철분 흡수 도움)'],
+  ['🍗 살코기 (소·닭, 완전히 익힌)','헴철 — 흡수 잘 되는 철분 + 단백질'],
+  ['💧 물 하루 8~10잔','양수·혈류량 유지, 변비·부종 예방의 기본'],
+  ['🍚 현미·잡곡','비타민B군 + 혈당 완만하게 (임당 예방)']
+];
+const FOODS_AVOID = [
+  ['🍶 술','전 기간 완전 금지 — 안전한 양은 없음'],
+  ['🍣 날생선·회·초밥','리스테리아·기생충 위험. 익힌 것만'],
+  ['🥩 덜 익힌 고기·육회','톡소플라즈마 위험. 웰던으로'],
+  ['🐟 수은 많은 생선','상어·황새치·참치(대형)는 피하기. 참치캔은 주 1~2회 이내'],
+  ['🧀 비살균 연성치즈','브리·카망베르 등 비살균 제품 — 리스테리아 위험 (살균 표기 확인)'],
+  ['🥓 가공육 (햄·소시지)','굳이 먹는다면 충분히 가열해서, 가끔만'],
+  ['🥚 날달걀 (반숙 포함)','살모넬라 위험. 수제 마요네즈·티라미수도 주의'],
+  ['☕ 카페인 과다','하루 200mg 이하 (아메리카노 1잔). 녹차·콜라·초콜릿도 카페인 있음'],
+  ['🌿 일부 한약재·허브차','임신 중 금기 약재 많음 — 반드시 전문가 확인'],
+  ['🍭 과도한 당분·액상과당','임신성 당뇨 위험. 과일주스보다 생과일로'],
+  ['🚬 흡연·간접흡연','저체중아·조산 위험. 남편도 금연 또는 밖에서만'],
+  ['💊 임의 약물 복용','진통제·감기약도 산부인과 확인 후에만']
+];
+
+/* ================= 체크리스트 ================= */
+const CHECKLIST = [
+  {group:'1분기 (지금) — 4~13주', items:[
+    ['hCG 피검사로 임신 확인 (2차 수치까지)',''],
+    ['프로게스테론 알람 설정 — 매일 같은 시간','시험관 초기 가장 중요한 습관'],
+    ['엽산 매일 복용 루틴 만들기',''],
+    ['임신확인서 발급받기','국민행복카드 신청에 필요'],
+    ['국민행복카드 신청','임신·출산 진료비 100만원 지원 (다태아 140만원)'],
+    ['보건소 임산부 등록','엽산·철분제 무료, 지자체별 추가 혜택'],
+    ['맘편한 임신 원스톱 서비스 신청 (정부24)','각종 임산부 지원 한 번에 신청'],
+    ['입덧 대비 — 크래커·생강차 상비',''],
+    ['분만 병원 알아보기 (10~12주 난임병원 졸업 대비)',''],
+    ['NT 초음파 예약 (11~13주 필수)','시기 놓치면 검사 불가'],
+    ['회사에 임신 알리기 & 근로시간 단축 신청','12주 이내 하루 2시간 단축 가능'],
+    ['자동차 임산부 스티커 발급','주차 편의']
+  ]},
+  {group:'2분기 — 14~27주', items:[
+    ['2차 기형아 검사 (15~20주)',''],
+    ['철분제 복용 시작 (16주~)',''],
+    ['치과 검진·스케일링','2분기가 가장 안전'],
+    ['정밀 초음파 (20~24주)',''],
+    ['산후조리원 예약','인기 조리원은 초기에 마감!'],
+    ['임신성 당뇨 검사 (24~28주)',''],
+    ['태교 루틴 만들기 — 태담, 음악, 산책',''],
+    ['임부복·바디필로우 장만',''],
+    ['출산휴가·육아휴직 계획 세우기','아빠 육아휴직도 함께 검토'],
+    ['아기용품 리스트 작성 & 중고/물려받기 조사','신생아용품은 사용 기간이 짧아요']
+  ]},
+  {group:'3분기 — 28~40주', items:[
+    ['백일해(Tdap) 백신 — 산모 (27~36주)',''],
+    ['백일해 백신 — 아빠·동거 가족',''],
+    ['태동 체크 습관 (하루 10회 확인)',''],
+    ['출산 가방 싸기 (34주 전 완성)','산모수첩·신분증 필수'],
+    ['카시트 구매 & 설치 연습','퇴원 때부터 필요'],
+    ['막달 검사 (34~36주)',''],
+    ['진진통/가진통 구분법 숙지 & 병원 가는 리허설',''],
+    ['정부 산모·신생아 건강관리 서비스 신청','출산 후 도우미 지원 (소득 기준·바우처)'],
+    ['아기 옷·침구 세탁해두기',''],
+    ['출생신고 절차 미리 알아두기','출생 후 1개월 이내'],
+    ['첫만남이용권 등 출산 지원금 확인','출생신고 후 신청 (200만원+)'],
+    ['냉동 반찬·집 정리 — 산후 대비','']
+  ]}
+];
+
+/* ================= 렌더링 ================= */
+let viewWeek = null;
+const $ = id => document.getElementById(id);
+const hasDate = () => !!settings.transferDate;
+const SETUP_CARD = `<div class="card" style="border-left:4px solid var(--primary)">
+  <h2>👋 처음 오셨네요!</h2>
+  <p>먼저 <b>설정 탭</b>에서 <b>배아 이식일</b>과 <b>배양 일수</b>를 입력해주세요. 입력하면 임신 주차, 출산예정일, 검사 일정이 자동으로 계산됩니다.</p>
+  <button class="btn-primary" style="margin-top:12px" onclick="goSettings()">⚙️ 설정하러 가기</button>
+</div>`;
+function goSettings() { document.querySelector('nav button[data-tab=settings]').click(); }
+
+function renderHeader() {
+  if (!hasDate()) {
+    $('header-sub').textContent = '설정에서 배아 이식일을 입력해주세요';
+    $('stat-week').textContent = '-'; $('stat-dday').textContent = '-'; $('stat-size').textContent = '🌱';
+    $('stat-week-extra').textContent = ''; $('stat-due').textContent = ''; $('stat-size-extra').textContent = '';
+    $('progress-fill').style.width = '0%'; $('progress-pct').textContent = ''; $('progress-tri').textContent = '';
+    return;
+  }
+  const c = calc();
+  $('header-sub').textContent = `이식일 ${fmtDate(c.transfer)} (${settings.embryoDay}일 배양) 기준`;
+  if (c.gaDays < 0) {
+    $('stat-week').textContent = '-'; return;
+  }
+  $('stat-week').textContent = `${c.week}주 ${c.day}일`;
+  const tri = c.week < 14 ? '1분기 (초기)' : c.week < 28 ? '2분기 (중기)' : '3분기 (후기)';
+  $('stat-week-extra').textContent = tri;
+  $('stat-dday').textContent = c.ddayNum > 0 ? `D-${c.ddayNum}` : c.ddayNum === 0 ? 'D-DAY!' : `D+${-c.ddayNum}`;
+  $('stat-due').textContent = fmtDate(c.dueDate);
+  const sz = SIZES[Math.min(Math.max(c.week,4),42)];
+  if (sz && c.week >= 4) { $('stat-size').textContent = sz[0]; $('stat-size-extra').textContent = sz[1]; }
+  else { $('stat-size').textContent = '🌱'; $('stat-size-extra').textContent = '착상 중'; }
+  const pct = Math.min(100, Math.max(0, (c.gaDays / 280) * 100));
+  $('progress-fill').style.width = pct + '%';
+  $('progress-pct').textContent = `${pct.toFixed(1)}% 진행`;
+  $('progress-tri').textContent = `출산까지 ${Math.max(0,c.ddayNum)}일`;
+}
+
+function weekCard(w, isCurrent) {
+  const d = WEEKS[w]; if (!d) return '';
+  const sz = SIZES[w];
+  return `
+    ${isCurrent ? '<span class="badge">📍 현재 주차</span>' : ''}
+    <div class="card">
+      <h2>👶 아기는 지금 ${sz ? `<span class="badge green">${sz[0]} 크기 · ${sz[1]}</span>` : ''}</h2>
+      <p>${d.baby}</p>
+      <h3>🤰 엄마의 몸</h3>
+      <p>${d.mom}</p>
+      <h3>✅ 이번 주 할 일</h3>
+      <ul>${d.todo.map(t=>`<li>${t}</li>`).join('')}</ul>
+      ${d.caution ? `<div class="notice">⚠️ ${d.caution}</div>` : ''}
+    </div>`;
+}
+
+function renderWeekTab() {
+  if (!hasDate()) { $('week-title').textContent = ''; $('week-detail').innerHTML = SETUP_CARD; return; }
+  const c = calc();
+  const cur = Math.min(Math.max(c.week, 4), 42);
+  if (viewWeek === null) viewWeek = cur;
+  const start = weekStartDate(viewWeek), end = addDays(start, 6);
+  $('week-title').innerHTML = `임신 ${viewWeek}주차<small>${fmtShort(start)} ~ ${fmtShort(end)}</small>`;
+  $('week-prev').disabled = viewWeek <= 4;
+  $('week-next').disabled = viewWeek >= 42;
+  $('week-detail').innerHTML = weekCard(viewWeek, viewWeek === cur);
+}
+function navWeek(dir) { viewWeek = Math.min(42, Math.max(4, viewWeek + dir)); renderWeekTab(); }
+function goCurrentWeek() { const c = calc(); viewWeek = Math.min(Math.max(c.week,4),42); renderWeekTab(); }
+
+function renderHome() {
+  if (!hasDate()) { $('tab-home').innerHTML = SETUP_CARD; return; }
+  const c = calc();
+  const w = Math.min(Math.max(c.week, 4), 42);
+  const upcoming = CHECKUPS.filter(x => x.e >= c.week).slice(0, 3);
+  let html = '';
+  if (c.week <= 12) {
+    html += `<div class="card" style="border-left:4px solid var(--primary)">
+      <h2>💊 시험관 초기 — 오늘의 핵심</h2>
+      <p><b>프로게스테론(질정/주사)을 병원 지시대로 꼭 챙기세요.</b> 시험관 임신 초기에는 황체 호르몬 보충이 유산 방지에 매우 중요해요. 알람을 맞춰두는 걸 추천합니다.</p>
+      <div class="tip">💡 엽산도 매일 함께! 초기 12주는 태아 신경관 형성의 골든타임입니다.</div>
+    </div>`;
+  }
+  html += weekCard(w, true);
+  html += `<div class="card"><h2>🗓️ 다가오는 검사</h2>` +
+    upcoming.map(x => {
+      const sd = weekStartDate(x.s), ed = addDays(weekStartDate(x.e), 6);
+      const now = c.week >= x.s && c.week <= x.e;
+      return `<div class="schedule-item ${now?'now':''}">
+        <div class="when"><div class="weeks">${x.s===x.e? x.s+'주' : x.s+'~'+x.e+'주'}</div>
+        <div class="dates">${fmtShort(sd)}~${fmtShort(ed)}</div></div>
+        <div class="what"><div class="name">${x.name}${now?' <span class="badge">지금!</span>':''}</div><div class="desc">${x.desc}</div></div>
+      </div>`;
+    }).join('') + `</div>`;
+  $('tab-home').innerHTML = html;
+}
+
+/* ================= 캘린더(.ics) 내보내기 ================= */
+function icsDate(d) {
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+function buildICS() {
+  const c = calc();
+  const lines = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//pregnancy-tracker//KR','CALSCALE:GREGORIAN',
+    'X-WR-CALNAME:임신 검사 일정 👶'
+  ];
+  const esc = s => s.replace(/([,;])/g,'\\$1');
+  // 검사 일정 — 각 검사 시작일에 종일 이벤트 + 하루 전 알림
+  CHECKUPS.forEach((x,i) => {
+    const sd = weekStartDate(x.s);
+    if (sd < c.today && c.week > x.e) return; // 이미 지난 검사는 제외
+    const range = x.s===x.e ? `${x.s}주` : `${x.s}~${x.e}주`;
+    lines.push('BEGIN:VEVENT',
+      `UID:pt-checkup-${i}-${icsDate(sd)}@pregnancy-tracker`,
+      `DTSTART;VALUE=DATE:${icsDate(sd)}`,
+      `DTEND;VALUE=DATE:${icsDate(addDays(sd,1))}`,
+      `SUMMARY:🏥 ${esc(x.name)} (${range})`,
+      `DESCRIPTION:${esc(x.desc)}`,
+      'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-P1D',`DESCRIPTION:${esc(x.name)} 시기예요`,'END:VALARM',
+      'END:VEVENT');
+  });
+  // 매주 주차 바뀌는 날 알림 (앱에서 새 주차 가이드 확인 유도)
+  const firstWeekDay = weekStartDate(Math.max(c.week+1, 5));
+  lines.push('BEGIN:VEVENT',
+    `UID:pt-weekly-${icsDate(firstWeekDay)}@pregnancy-tracker`,
+    `DTSTART;VALUE=DATE:${icsDate(firstWeekDay)}`,
+    `DTEND;VALUE=DATE:${icsDate(addDays(firstWeekDay,1))}`,
+    `RRULE:FREQ=WEEKLY;UNTIL=${icsDate(c.dueDate)}T000000Z`,
+    'SUMMARY:🤍 임신 주차가 올라갔어요 — 이번 주 가이드 확인!',
+    'DESCRIPTION:앱에서 새 주차의 아기 발달·할 일·주의사항을 확인해보세요',
+    'END:VEVENT');
+  // 프로게스테론 매일 알림 (12주까지, 시험관 필수)
+  const twelveWeeks = weekStartDate(12);
+  if (c.today < twelveWeeks) {
+    lines.push('BEGIN:VEVENT',
+      `UID:pt-prog-${icsDate(c.today)}@pregnancy-tracker`,
+      `DTSTART;VALUE=DATE:${icsDate(addDays(c.today,1))}`,
+      `DTEND;VALUE=DATE:${icsDate(addDays(c.today,2))}`,
+      `RRULE:FREQ=DAILY;UNTIL=${icsDate(twelveWeeks)}T000000Z`,
+      'SUMMARY:💊 프로게스테론 + 엽산 챙기기',
+      'DESCRIPTION:시험관 초기 필수! 병원 지시 용법대로. 중단 시점은 담당의와 상의 (보통 8~12주)',
+      'END:VEVENT');
+  }
+  // 출산예정일
+  lines.push('BEGIN:VEVENT',
+    `UID:pt-due-${icsDate(c.dueDate)}@pregnancy-tracker`,
+    `DTSTART;VALUE=DATE:${icsDate(c.dueDate)}`,
+    `DTEND;VALUE=DATE:${icsDate(addDays(c.dueDate,1))}`,
+    'SUMMARY:👶 출산 예정일!',
+    'END:VEVENT','END:VCALENDAR');
+  return lines.join('\r\n');
+}
+function downloadICS() {
+  const blob = new Blob([buildICS()], {type:'text/calendar;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '임신검사일정.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+function renderSchedule() {
+  if (!hasDate()) { $('tab-schedule').innerHTML = SETUP_CARD; return; }
+  const c = calc();
+  $('tab-schedule').innerHTML = `
+  <div class="card">
+    <h2>📲 아이폰/구글 캘린더로 알림 받기</h2>
+    <p style="font-size:13px;color:var(--text-sub);margin-bottom:12px">아래 버튼으로 캘린더 파일을 받아 열면, 남은 검사 일정(하루 전 알림 포함) + 매일 프로게스테론 알림(12주까지) + 매주 주차 알림이 폰 캘린더에 등록돼요. 부부 공유 캘린더에 넣으면 둘 다 알림을 받습니다.</p>
+    <button class="btn-primary" onclick="downloadICS()">🗓️ 캘린더 파일(.ics) 내려받기</button>
+    <div class="tip">💡 아이폰: 파일을 받은 뒤 열기 → "모두 추가". 구글 캘린더: 설정 → 가져오기에서 파일 선택.</div>
+  </div>
+  <div class="card"><h2>🗓️ 전체 검사 일정 <span class="badge green">날짜 자동 계산</span></h2>` +
+    CHECKUPS.map(x => {
+      const sd = weekStartDate(x.s), ed = addDays(weekStartDate(x.e), 6);
+      const done = c.week > x.e, now = c.week >= x.s && c.week <= x.e;
+      return `<div class="schedule-item ${done?'done':''} ${now?'now':''}">
+        <div class="when"><div class="weeks">${x.s===x.e? x.s+'주' : x.s+'~'+x.e+'주'}</div>
+        <div class="dates">${fmtShort(sd)} ~ ${fmtShort(ed)}</div></div>
+        <div class="what"><div class="name">${done?'✓ ':''}${x.name}${now?' <span class="badge">지금!</span>':''}</div><div class="desc">${x.desc}</div></div>
+      </div>`;
+    }).join('') + `<div class="tip">💡 검진 기본 주기: ~27주 4주 1회 → 28~35주 2주 1회 → 36주~ 매주 1회. 시험관·고위험 임신은 병원 방침에 따라 더 자주일 수 있어요.</div></div>`;
+}
+
+function renderNutrition() {
+  $('tab-nutrition').innerHTML = `
+    <div class="card"><h2>💊 영양제 로드맵</h2>` +
+    SUPPLEMENTS.map(s=>`<div class="supp-item"><div class="name">${s.name}</div><div class="period">${s.period}</div><div class="desc">${s.desc}</div></div>`).join('') +
+    `<div class="tip">💡 종합 임산부 비타민 하나로 대체해도 좋아요. 다만 <b>엽산 함량</b>과 <b>비타민A 과다(레티놀 형태 주의)</b> 여부를 확인하세요.</div></div>
+    <div class="food-cols">
+      <div class="card"><h2>🥗 챙겨 먹으면 좋아요</h2><ul>` +
+      FOODS_GOOD.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:12.5px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
+      `</ul></div>
+      <div class="card"><h2>🚫 피해야 해요</h2><ul>` +
+      FOODS_AVOID.map(f=>`<li><b>${f[0]}</b><br><span style="font-size:12.5px;color:var(--text-sub)">${f[1]}</span></li>`).join('') +
+      `</ul></div>
+    </div>
+    <div class="card"><h2>🏃 운동 & 생활</h2><ul>
+      <li><b>걷기</b> — 전 기간 최고의 운동. 하루 30분 목표</li>
+      <li><b>임산부 요가·수영</b> — 2분기부터 추천</li>
+      <li><b>케겔 운동</b> — 분만·산후 회복에 도움</li>
+      <li><b>수면</b> — 2분기부터 왼쪽으로 눕기, 바디필로우 활용</li>
+      <li><b>피할 것</b> — 넘어질 위험 있는 운동, 복부 압박 자세, 사우나·찜질방(특히 초기)</li>
+    </ul><div class="notice">⚠️ 시험관 임신 초기(심박 확인 전후)에는 운동 강도를 담당의와 먼저 상의하세요. 가벼운 산책 수준이 안전합니다.</div></div>`;
+}
+
+function loadChecks() { try { return JSON.parse(localStorage.getItem('pt-checks')||'{}'); } catch { return {}; } }
+function renderChecklist() {
+  const checks = loadChecks();
+  let idx = 0;
+  $('tab-checklist').innerHTML = CHECKLIST.map(g => {
+    const items = g.items.map(it => {
+      const id = 'chk' + (idx++);
+      const on = !!checks[id];
+      return `<label class="check-item ${on?'checked':''}" data-id="${id}">
+        <input type="checkbox" ${on?'checked':''}>
+        <span class="txt">${it[0]}${it[1]?`<small>${it[1]}</small>`:''}</span></label>`;
+    }).join('');
+    return `<div class="card"><h2>${g.group}</h2>${items}</div>`;
+  }).join('');
+  document.querySelectorAll('.check-item input').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const label = e.target.closest('.check-item');
+      const checks = loadChecks();
+      checks[label.dataset.id] = e.target.checked;
+      try { localStorage.setItem('pt-checks', JSON.stringify(checks)); } catch {}
+      label.classList.toggle('checked', e.target.checked);
+    });
+  });
+}
+
+function renderSettings() {
+  $('tab-settings').innerHTML = `<div class="card"><h2>⚙️ 설정</h2>
+    <div class="settings-row"><label>배아 이식일</label>
+      <input type="date" id="set-date" value="${settings.transferDate}"></div>
+    <div class="settings-row"><label>배아 배양 일수</label>
+      <select id="set-embryo">
+        <option value="5" ${settings.embryoDay==5?'selected':''}>5일 배양 (배반포) — 가장 흔함</option>
+        <option value="3" ${settings.embryoDay==3?'selected':''}>3일 배양</option>
+        <option value="6" ${settings.embryoDay==6?'selected':''}>6일 배양</option>
+      </select></div>
+    <button class="btn-primary" onclick="saveSettings()">저장</button>
+    <div class="tip">💡 시험관 임신 주차 계산: 이식일에 이미 <b>임신 2주 + 배양일수</b>가 지난 것으로 계산합니다. 병원에서 알려준 출산예정일과 다르면 병원 날짜가 우선이에요.</div>
+  </div>`;
+}
+function saveSettings() {
+  if (!$('set-date').value) { alert('배아 이식일을 입력해주세요!'); return; }
+  settings.transferDate = $('set-date').value;
+  settings.embryoDay = Number($('set-embryo').value);
+  try { localStorage.setItem('pt-settings', JSON.stringify(settings)); }
+  catch { alert('⚠️ 브라우저 저장이 차단되어 있어요(사생활 보호 모드?). 이번 세션에서만 적용됩니다.'); }
+  viewWeek = null;
+  renderAll();
+  alert('저장했어요! 주차가 다시 계산됩니다.');
+}
+
+/* ================= 탭 ================= */
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-' + btn.dataset.tab).classList.add('active');
+    window.scrollTo(0,0);
+  });
+});
+
+function renderAll() {
+  renderHeader(); renderHome(); renderWeekTab();
+  renderSchedule(); renderNutrition(); renderChecklist(); renderSettings();
+}
+renderAll();
+</script>
+</body>
+</html>
