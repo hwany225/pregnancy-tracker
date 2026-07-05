@@ -64,8 +64,8 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   nav button {
-    flex: 1; padding: 10px 4px 12px; border: none; background: none; cursor: pointer;
-    font-size: 12.5px; color: var(--text-sub); font-family: inherit;
+    flex: 1; padding: 10px 2px 12px; border: none; background: none; cursor: pointer;
+    font-size: 12px; color: var(--text-sub); font-family: inherit; white-space: nowrap;
   }
   nav button .icon { display: block; font-size: 22px; margin-bottom: 2px; }
   nav button.active { color: var(--primary); font-weight: 700; }
@@ -159,6 +159,22 @@
   .supp-item .name { font-weight: 700; font-size: 16px; }
   .supp-item .period { font-size: 13.5px; color: var(--primary); font-weight: 700; }
   .supp-item .desc { font-size: 14.5px; color: var(--text-sub); margin-top: 2px; }
+
+  /* Notes */
+  .note-input {
+    width: 100%; min-height: 90px; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--border); font-size: 16px; font-family: inherit;
+    color: var(--text); resize: vertical; background: #fff;
+  }
+  .note-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .note-item:last-child { border-bottom: none; }
+  .note-item .meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .note-item .date { font-size: 13.5px; color: var(--text-sub); }
+  .note-item .body { font-size: 16px; white-space: pre-wrap; word-break: break-word; }
+  .note-item .del {
+    margin-left: auto; border: none; background: none; color: var(--text-sub);
+    font-size: 13px; cursor: pointer; font-family: inherit; padding: 4px;
+  }
 </style>
 </head>
 <body>
@@ -213,6 +229,8 @@
   <div class="tab-content" id="tab-nutrition"></div>
   <!-- 체크리스트 -->
   <div class="tab-content" id="tab-checklist"></div>
+  <!-- 기록 -->
+  <div class="tab-content" id="tab-notes"></div>
   <!-- 설정 -->
   <div class="tab-content" id="tab-settings"></div>
 
@@ -222,9 +240,10 @@
 <nav>
   <button class="active" data-tab="home"><span class="icon">🏠</span>오늘</button>
   <button data-tab="weeks"><span class="icon">📖</span>주차별</button>
-  <button data-tab="schedule"><span class="icon">🗓️</span>검사일정</button>
+  <button data-tab="schedule"><span class="icon">🗓️</span>검사</button>
   <button data-tab="nutrition"><span class="icon">🥗</span>영양</button>
-  <button data-tab="checklist"><span class="icon">✅</span>체크리스트</button>
+  <button data-tab="checklist"><span class="icon">✅</span>체크</button>
+  <button data-tab="notes"><span class="icon">📝</span>기록</button>
   <button data-tab="settings"><span class="icon">⚙️</span>설정</button>
 </nav>
 
@@ -766,6 +785,57 @@ function renderChecklist() {
   });
 }
 
+/* ================= 기록(메모) ================= */
+function loadNotes() { try { return JSON.parse(localStorage.getItem('pt-notes')||'[]'); } catch { return []; } }
+function saveNotes(notes) {
+  try { localStorage.setItem('pt-notes', JSON.stringify(notes)); }
+  catch { alert('⚠️ 저장 공간에 접근할 수 없어요. 사생활 보호 모드인지 확인해주세요.'); }
+}
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function addNote() {
+  const ta = $('note-text');
+  const text = ta.value.trim();
+  if (!text) return;
+  const notes = loadNotes();
+  const c = hasDate() ? calc() : null;
+  notes.unshift({
+    id: Date.now(),
+    date: fmtDate(new Date()),
+    week: c && c.gaDays >= 0 ? `${c.week}주 ${c.day}일` : '',
+    text
+  });
+  saveNotes(notes);
+  ta.value = '';
+  renderNotes();
+}
+function delNote(id) {
+  if (!confirm('이 기록을 삭제할까요?')) return;
+  saveNotes(loadNotes().filter(n => n.id !== id));
+  renderNotes();
+}
+function renderNotes() {
+  const notes = loadNotes();
+  $('tab-notes').innerHTML = `
+  <div class="card">
+    <h2>📝 새 기록</h2>
+    <textarea class="note-input" id="note-text" placeholder="병원 다녀온 내용, hCG 수치, 오늘의 증상·컨디션, 궁금한 점(다음 진료 때 물어볼 것) 등 자유롭게 적어보세요"></textarea>
+    <button class="btn-primary" style="margin-top:10px" onclick="addNote()">저장하기</button>
+  </div>
+  <div class="card">
+    <h2>📚 지난 기록 ${notes.length ? `<span class="badge green">${notes.length}개</span>` : ''}</h2>
+    ${notes.length ? notes.map(n => `
+      <div class="note-item">
+        <div class="meta">
+          ${n.week ? `<span class="badge">${n.week}</span>` : ''}
+          <span class="date">${n.date}</span>
+          <button class="del" onclick="delNote(${n.id})">삭제</button>
+        </div>
+        <div class="body">${escHtml(n.text)}</div>
+      </div>`).join('')
+    : '<p style="color:var(--text-sub)">아직 기록이 없어요. 첫 기록을 남겨보세요 🙂</p>'}
+  </div>`;
+}
+
 function renderSettings() {
   $('tab-settings').innerHTML = `<div class="card"><h2>⚙️ 설정</h2>
     <div class="settings-row"><label>배아 이식일</label>
@@ -804,7 +874,7 @@ document.querySelectorAll('nav button').forEach(btn => {
 
 function renderAll() {
   renderHeader(); renderHome(); renderWeekTab();
-  renderSchedule(); renderNutrition(); renderChecklist(); renderSettings();
+  renderSchedule(); renderNutrition(); renderChecklist(); renderNotes(); renderSettings();
 }
 renderAll();
 </script>
